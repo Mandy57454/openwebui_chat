@@ -11,7 +11,7 @@ from config import Config
 
 def example_basic_chat():
     """基本聊天範例"""
-    print("=== 基本聊天範例 ===")
+    print("=== 基本聊天範例 | Basic Chat Example ===")
     
     # 初始化客戶端
     chat_client = OpenWebUIChat()
@@ -22,12 +22,12 @@ def example_basic_chat():
         user_input="你好！請介紹一下自己。"
     )
     
-    print(f"AI 回應: {response}")
+    print(f"AI 回應 | AI Response: {response}")
 
 
 def example_file_upload_and_rag():
     """檔案上傳和 RAG 範例"""
-    print("\n=== 檔案上傳和 RAG 範例 ===")
+    print("\n=== 檔案上傳和 RAG 範例 | File Upload and RAG Example ===")
     
     # 初始化客戶端
     chat_client = OpenWebUIChat()
@@ -61,9 +61,9 @@ AI 的發展歷史可以追溯到 1950 年代，當時艾倫·圖靈提出了著
                 file_path=test_file
             )
             
-            print(f"AI 回應: {response}")
+            print(f"AI 回應 | AI Response: {response}")
         else:
-            print("檔案上傳失敗")
+            print("檔案上傳失敗 | File upload failed")
             
     finally:
         # 清理測試文件
@@ -73,14 +73,14 @@ AI 的發展歷史可以追溯到 1950 年代，當時艾倫·圖靈提出了著
 
 def example_advanced_chat():
     """進階聊天範例"""
-    print("\n=== 進階聊天範例 ===")
+    print("\n=== 進階聊天範例 | Advanced Chat Example ===")
     
     # 初始化客戶端
     chat_client = OpenWebUIChat()
     
     # 獲取可用模型
     models = chat_client.get_available_models()
-    print("可用模型:")
+    print("可用模型 | Available models:")
     for model in models:
         print(f"  - {model.get('id', 'Unknown')}")
     
@@ -98,12 +98,12 @@ def example_advanced_chat():
     
     if 'choices' in response and len(response['choices']) > 0:
         ai_response = response['choices'][0]['message']['content']
-        print(f"AI 回應: {ai_response}")
+        print(f"AI 回應 | AI Response: {ai_response}")
 
 
 def example_streaming_chat():
     """串流聊天範例"""
-    print("\n=== 串流聊天範例 ===")
+    print("\n=== 串流聊天範例 | Streaming Chat Example ===")
     
     # 初始化客戶端
     chat_client = OpenWebUIChat()
@@ -117,19 +117,19 @@ def example_streaming_chat():
         stream=True
     )
     
-    print(f"完整回應: {response.get('content', '無回應')}")
+    print(f"完整回應 | Full response: {response.get('content', '無回應 | No response')}")
 
 
 def main():
     """主函數"""
-    print("Open WebUI 聊天客戶端使用範例")
+    print("Open WebUI 聊天客戶端使用範例 | Open WebUI Chat Client Examples")
     print("=" * 50)
     
     # 檢查 API 金鑰
     api_key = Config.get_api_key()
     if not api_key:
-        print("❌ 無法獲取 API 金鑰")
-        print("請檢查 config.py 中的 DEFAULT_API_KEY 設定")
+        print("❌ 無法獲取 API 金鑰 | Unable to get API key")
+        print("請檢查 config.py 中的 DEFAULT_API_KEY 設定 | Please check DEFAULT_API_KEY setting in config.py")
         return
     
     try:
@@ -140,7 +140,7 @@ def main():
         example_streaming_chat()
         
     except Exception as e:
-        print(f"❌ 執行範例時發生錯誤: {e}")
+        print(f"❌ 執行範例時發生錯誤: {e} | Error occurred while running examples: {e}")
 
 
 if __name__ == "__main__":

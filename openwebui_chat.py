@@ -28,7 +28,7 @@ class OpenWebUIChat:
         self.api_key = api_key or Config.get_api_key()
         
         if not self.api_key:
-            raise ValueError("請提供 API 金鑰或設定 OPENWEBUI_API_KEY 環境變數")
+            raise ValueError("請提供 API 金鑰或設定 OPENWEBUI_API_KEY 環境變數 | Please provide API key or set OPENWEBUI_API_KEY environment variable")
         
         self.headers = {
             'Authorization': f'Bearer {self.api_key}',
@@ -44,11 +44,11 @@ class OpenWebUIChat:
         try:
             response = requests.get(f"{self.base_url}/api/models", headers=self.headers)
             if response.status_code == 200:
-                print("✅ 成功連接到 Open WebUI")
+                print("✅ 成功連接到 Open WebUI | Successfully connected to Open WebUI")
             else:
-                print(f"⚠️  連線測試失敗，狀態碼: {response.status_code}")
+                print(f"⚠️  連線測試失敗，狀態碼: {response.status_code} | Connection test failed, status code: {response.status_code}")
         except requests.exceptions.RequestException as e:
-            print(f"❌ 無法連接到 Open WebUI: {e}")
+            print(f"❌ 無法連接到 Open WebUI: {e} | Unable to connect to Open WebUI: {e}")
             sys.exit(1)
     
     def get_available_models(self) -> List[Dict[str, Any]]:
@@ -69,11 +69,11 @@ class OpenWebUIChat:
             elif isinstance(data, list):
                 return data
             else:
-                print(f"⚠️  未知的模型列表格式: {data}")
+                print(f"⚠️  未知的模型列表格式: {data} | Unknown model list format: {data}")
                 return []
                 
         except requests.exceptions.RequestException as e:
-            print(f"❌ 獲取模型列表失敗: {e}")
+            print(f"❌ 獲取模型列表失敗: {e} | Failed to get model list: {e}")
             return []
     
     def upload_file(self, file_path: str) -> Optional[str]:
@@ -87,7 +87,7 @@ class OpenWebUIChat:
             檔案 ID，如果上傳失敗則返回 None
         """
         if not os.path.exists(file_path):
-            print(f"❌ 檔案不存在: {file_path}")
+            print(f"❌ 檔案不存在: {file_path} | File does not exist: {file_path}")
             return None
         
         try:
@@ -107,14 +107,14 @@ class OpenWebUIChat:
                 
                 result = response.json()
                 file_id = result.get('id')
-                print(f"✅ 檔案上傳成功: {os.path.basename(file_path)} (ID: {file_id})")
+                print(f"✅ 檔案上傳成功: {os.path.basename(file_path)} (ID: {file_id}) | File uploaded successfully: {os.path.basename(file_path)} (ID: {file_id})")
                 return file_id
                 
         except requests.exceptions.RequestException as e:
-            print(f"❌ 檔案上傳失敗: {e}")
+            print(f"❌ 檔案上傳失敗: {e} | File upload failed: {e}")
             return None
         except Exception as e:
-            print(f"❌ 檔案上傳時發生錯誤: {e}")
+            print(f"❌ 檔案上傳時發生錯誤: {e} | Error occurred during file upload: {e}")
             return None
     
     def chat_completion(self, 
@@ -160,20 +160,20 @@ class OpenWebUIChat:
                 return response.json()
                 
         except requests.exceptions.HTTPError as e:
-            print(f"❌ 聊天請求失敗 (HTTP {response.status_code}): {e}")
+            print(f"❌ 聊天請求失敗 (HTTP {response.status_code}): {e} | Chat request failed (HTTP {response.status_code}): {e}")
             try:
                 error_detail = response.json()
-                print(f"錯誤詳情: {error_detail}")
+                print(f"錯誤詳情: {error_detail} | Error details: {error_detail}")
             except:
-                print(f"回應內容: {response.text}")
+                print(f"回應內容: {response.text} | Response content: {response.text}")
             return {}
         except requests.exceptions.RequestException as e:
-            print(f"❌ 聊天請求失敗: {e}")
+            print(f"❌ 聊天請求失敗: {e} | Chat request failed: {e}")
             return {}
     
     def _handle_stream_response(self, response):
         """處理串流回應"""
-        print("\n🤖 AI 回應:")
+        print("\n🤖 AI 回應 | AI Response:")
         print("-" * 50)
         
         full_content = ""
@@ -218,17 +218,17 @@ class OpenWebUIChat:
             file_id = self.upload_file(file_path)
             if file_id:
                 files = [{'type': 'file', 'id': file_id}]
-                print(f"📄 使用檔案進行 RAG 聊天: {os.path.basename(file_path)}")
+                print(f"📄 使用檔案進行 RAG 聊天: {os.path.basename(file_path)} | Using file for RAG chat: {os.path.basename(file_path)}")
         
-        print(f"🤖 使用模型: {model}")
-        print(f"👤 您的問題: {user_input}")
+        print(f"🤖 使用模型 | Using model: {model}")
+        print(f"👤 您的問題 | Your question: {user_input}")
         
         response = self.chat_completion(model, messages, files, stream=True)
         
         if 'content' in response:
             return response['content']
         else:
-            return "抱歉，無法獲取回應。"
+            return "抱歉，無法獲取回應。| Sorry, unable to get response."
     
     def interactive_chat(self, model: str):
         """
@@ -237,12 +237,12 @@ class OpenWebUIChat:
         Args:
             model: 使用的模型
         """
-        print(f"\n🎯 進入互動式聊天模式 (模型: {model})")
-        print("💡 提示:")
-        print("   - 輸入 'quit' 或 'exit' 退出")
-        print("   - 輸入 'upload <檔案路徑>' 上傳檔案並在下次對話中使用")
-        print("   - 輸入 'models' 查看可用模型")
-        print("   - 輸入 'switch <模型名稱>' 切換模型")
+        print(f"\n🎯 進入互動式聊天模式 (模型: {model}) | Entering interactive chat mode (model: {model})")
+        print("💡 提示 | Tips:")
+        print("   - 輸入 'quit' 或 'exit' 退出 | Type 'quit' or 'exit' to quit")
+        print("   - 輸入 'upload <檔案路徑>' 上傳檔案並在下次對話中使用 | Type 'upload <file_path>' to upload a file")
+        print("   - 輸入 'models' 查看可用模型 | Type 'models' to view available models")
+        print("   - 輸入 'switch <模型名稱>' 切換模型 | Type 'switch <model_name>' to switch model")
         print("-" * 60)
         
         current_file_id = None
@@ -255,24 +255,24 @@ class OpenWebUIChat:
                     continue
                 
                 if user_input.lower() in ['quit', 'exit', '退出']:
-                    print("👋 再見！")
+                    print("👋 再見！| Goodbye!")
                     break
                 
                 if user_input.lower() == 'models':
                     models = self.get_available_models()
                     if models:
-                        print("\n📋 可用模型:")
+                        print("\n📋 可用模型 | Available models:")
                         for i, model_info in enumerate(models, 1):
                             model_name = model_info.get('id', 'Unknown')
                             print(f"   {i}. {model_name}")
                     else:
-                        print("❌ 無法獲取模型列表")
+                        print("❌ 無法獲取模型列表 | Unable to get model list")
                     continue
                 
                 if user_input.lower().startswith('switch '):
                     new_model = user_input[7:].strip()
                     model = new_model
-                    print(f"✅ 已切換到模型: {model}")
+                    print(f"✅ 已切換到模型: {model} | Switched to model: {model}")
                     continue
                 
                 if user_input.lower().startswith('upload '):
@@ -280,7 +280,7 @@ class OpenWebUIChat:
                     file_id = self.upload_file(file_path)
                     if file_id:
                         current_file_id = file_id
-                        print(f"✅ 檔案已上傳，將在下次對話中使用")
+                        print(f"✅ 檔案已上傳，將在下次對話中使用 | File uploaded and will be used in next conversation")
                     continue
                 
                 # 準備檔案列表
@@ -293,10 +293,10 @@ class OpenWebUIChat:
                 response = self.chat_completion(model, messages, files, stream=True)
                 
             except KeyboardInterrupt:
-                print("\n👋 再見！")
+                print("\n👋 再見！| Goodbye!")
                 break
             except Exception as e:
-                print(f"❌ 發生錯誤: {e}")
+                print(f"❌ 發生錯誤: {e} | Error occurred: {e}")
 
 
 def main():
@@ -319,7 +319,7 @@ def main():
         # 顯示可用模型
         models = chat_client.get_available_models()
         if models:
-            print("\n📋 可用模型:")
+            print("\n📋 可用模型 | Available models:")
             for model_info in models:
                 if isinstance(model_info, dict):
                     model_name = model_info.get('id', 'Unknown')
@@ -333,19 +333,19 @@ def main():
         elif args.query:
             # 單次查詢模式
             response = chat_client.simple_chat(args.model, args.query, args.file)
-            print(f"\n🤖 AI 回應: {response}")
+            print(f"\n🤖 AI 回應 | AI Response: {response}")
         else:
             # 預設進入互動式模式
             chat_client.interactive_chat(args.model)
             
     except ValueError as e:
-        print(f"❌ 配置錯誤: {e}")
-        print("💡 請設定 API 金鑰:")
-        print("   1. 使用 --api-key 參數")
-        print("   2. 或設定 OPENWEBUI_API_KEY 環境變數")
+        print(f"❌ 配置錯誤: {e} | Configuration error: {e}")
+        print("💡 請設定 API 金鑰 | Please set API key:")
+        print("   1. 使用 --api-key 參數 | Use --api-key parameter")
+        print("   2. 或設定 OPENWEBUI_API_KEY 環境變數 | Or set OPENWEBUI_API_KEY environment variable")
         sys.exit(1)
     except Exception as e:
-        print(f"❌ 程式執行失敗: {e}")
+        print(f"❌ 程式執行失敗: {e} | Program execution failed: {e}")
         sys.exit(1)
 
 

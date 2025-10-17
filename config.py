@@ -13,7 +13,7 @@ class Config:
     
     # Open WebUI 服務設定
     DEFAULT_BASE_URL = "http://localhost:8080/"
-    DEFAULT_MODEL = "gemma3:1b"
+    DEFAULT_MODEL = "map04"
     
     # API 金鑰設定
     API_KEY_ENV_VAR = "OPENWEBUI_API_KEY"
